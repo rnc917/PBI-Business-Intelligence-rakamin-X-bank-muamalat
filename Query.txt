@@ -1,0 +1,44 @@
+-----------------------PRIMARY KEY-----------------------------------
+-- Table Customers -- CustomerID
+ALTER TABLE Finaltask5.Customers ADD PRIMARY KEY (CustomerID) NOT ENFORCED;
+-- Table Orders -- OrderID
+ALTER TABLE Finaltask5.Orders ADD PRIMARY KEY (OrderID) NOT ENFORCED;
+-- Table products -- ProdNumber
+ALTER TABLE Finaltask5.products ADD PRIMARY KEY (ProdNumber) NOT ENFORCED;
+-- Table ProductCategory -- CategoryID
+ALTER TABLE Finaltask5.ProductCategory ADD PRIMARY KEY (CategoryID) NOT ENFORCED;
+
+-----------------------FOREIGN KEY-----------------------------------
+-- Table Orders (CustomersID) -- Table Customers (CustomerID)
+ALTER TABLE Finaltask5.Orders ADD FOREIGN KEY (CustomerID) references Finaltask5.Customers (CustomerID) NOT ENFORCED;
+-- Table Orders (ProdNumber) -- Table products (ProdNumber)
+ALTER TABLE Finaltask5.Orders ADD FOREIGN KEY (ProdNumber) references Finaltask5.products(ProdNumber) NOT ENFORCED;
+-- Table products (category) -- Table productscategory (CategoryID)
+ALTER TABLE Finaltask5.products ADD FOREIGN KEY (Category) references Finaltask5.ProductCategory(CategoryID) NOT ENFORCED;
+
+
+---------------MASTER DATA ----------------------------------------------
+SELECT
+    o.Date AS order_date,
+    pc.CategoryName AS category_name,
+    p.ProdName AS product_name,
+    p.Price AS product_price,
+    o.Quantity AS order_qty,
+    ROUND(SUM(p.Price * o.Quantity), 2) AS total_sales,
+    c.CustomerEmail AS cust_email,
+    c.CustomerCity AS cust_city
+FROM
+    Finaltask5.Orders o
+    JOIN Finaltask5.Customers c ON o.CustomerID = c.CustomerID
+    JOIN Finaltask5.products p ON o.ProdNumber = p.ProdNumber
+    JOIN Finaltask5.ProductCategory pc ON p.Category = pc.CategoryID
+GROUP BY
+    o.Date,
+    pc.CategoryName,
+    p.ProdName,
+    p.Price,
+    o.Quantity,
+    c.CustomerEmail,
+    c.CustomerCity
+ORDER BY
+    o.Date ASC;
